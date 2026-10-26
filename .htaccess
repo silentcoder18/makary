@@ -1,0 +1,16 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # 1. Protection de sécurité : interdire formellement l'accès aux fichiers et dossiers sensibles
+    RewriteRule ^(\.env|\.git|composer\.(json|lock)|package(-lock)?\.json|phpunit\.xml|pint\.json|artisan|storage/|bootstrap/cache/|database/|tests/|specs/|outils-dev/|node_modules/) - [F,L,NC]
+
+    # 2. Compatibilité hébergement mutualisé :
+    # Si le serveur pointe vers la racine du projet au lieu de /public, rediriger vers /public/
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Bloquer l'affichage de l'index des dossiers
+<IfModule mod_autoindex.c>
+    Options -Indexes
+</IfModule>

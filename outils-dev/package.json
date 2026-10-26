@@ -1,0 +1,10 @@
+{
+  "name": "makary-outils-dev",
+  "private": true,
+  "description": "Outillage de développement : recette dans Chrome sans interface (axe-core, débordement, budget)",
+  "type": "module",
+  "dependencies": {
+    "axe-core": "4.14.0",
+    "puppeteer-core": "25.12.0"
+  }
+}

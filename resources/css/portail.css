@@ -1,0 +1,430 @@
+/*
+ * Portail de la Commune de Makary — direction artistique v2 « L'eau, la terre, le soleil » (MKY-P2-02).
+ * Tailwind CSS compilé et purgé (§7). Seuls les jetons de la charte sont disponibles : contrastes AA vérifiés.
+ * Polices système, aucune ressource tierce ; aucune animation automatique.
+ */
+@import 'tailwindcss';
+
+@source '../views';
+
+@theme {
+    --color-*: initial;
+    /* Couleurs tirées du logo de la Commune (public/logo.jpg), assombries pour les contrastes WCAG AA :
+       indigo du cadre (nuit, lac), bleu de l'eau (lagune), ruban aux couleurs du drapeau (palmeraie, terre, soleil),
+       crème de l'écusson (sable, argile). Les noms des jetons sont conservés. Voir docs/conception/direction_artistique.md. */
+    --color-white: #ffffff;
+    --color-transparent: transparent;
+    --color-current: currentColor;
+    --color-nuit: #1a1439;
+    --color-nuit-clair: #2e2654;
+    --color-lac: #473399;
+    --color-lagune: #1d52af;
+    --color-terre: #bc1a2a;
+    --color-terre-fonce: #941421;
+    --color-soleil: #f6e331;
+    --color-palmeraie: #3e6921;
+    --color-sable: #fbf9e9;
+    --color-argile: #ebe4c2;
+    --color-encre: #181528;
+    --color-ardoise: #59546d;
+
+    --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', 'Liberation Sans', Arial, sans-serif;
+
+    --radius-carte: 0.875rem;
+    --shadow-carte: 0 1px 2px rgb(26 20 57 / 0.06), 0 10px 28px -14px rgb(26 20 57 / 0.22);
+    --shadow-survol: 0 2px 6px rgb(26 20 57 / 0.08), 0 22px 44px -18px rgb(26 20 57 / 0.32);
+}
+
+/* -------------------------------------------------------------------------------------------- */
+@layer base {
+    :root {
+        --image-frise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 42 14'%3E%3Cpath d='M0 14 7 0l7 14z' fill='%233E6921'/%3E%3Cpath d='M14 14 21 0l7 14z' fill='%23BC1A2A'/%3E%3Cpath d='m35 2 5 5-5 5-5-5z' fill='%23F6E331'/%3E%3C/svg%3E");
+        --image-frise-claire: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 14'%3E%3Cpath d='M0 14 7 0l7 14z' fill='%23EBE4C2'/%3E%3Cpath d='m21 2 5 5-5 5-5-5z' fill='%231D52AF'/%3E%3C/svg%3E");
+    }
+
+    html {
+        color: var(--color-encre);
+        background: var(--color-white);
+        -webkit-text-size-adjust: 100%;
+        scroll-padding-top: 7rem;
+    }
+
+    body {
+        font-family: var(--font-sans);
+        line-height: 1.65;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4 {
+        font-weight: 800;
+        line-height: 1.12;
+        letter-spacing: -0.02em;
+        text-wrap: balance;
+    }
+
+    p { text-wrap: pretty; }
+
+    a { color: var(--color-lac); text-underline-offset: 0.2em; text-decoration-thickness: 0.08em; }
+    a:hover { text-decoration-thickness: 0.14em; }
+
+    :focus-visible { outline: 3px solid var(--color-lac); outline-offset: 3px; border-radius: 0.25rem; }
+    .sur-sombre :focus-visible { outline-color: var(--color-soleil); }
+
+    ::selection { background: var(--color-soleil); color: var(--color-encre); }
+
+    img, svg { display: block; }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, ::before, ::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+    }
+}
+
+/* -------------------------------------------------------------------------------------------- */
+@layer components {
+    .conteneur { width: 100%; max-width: 78rem; margin-inline: auto; padding-inline: 1rem; }
+    @media (min-width: 40rem) { .conteneur { padding-inline: 1.5rem; } }
+    @media (min-width: 64rem) { .conteneur { padding-inline: 2rem; } }
+
+    .lien-evitement {
+        position: absolute; left: 1rem; top: -4rem; z-index: 60; padding: 0.75rem 1rem; border-radius: 0 0 0.5rem 0.5rem;
+        background: var(--color-nuit); color: var(--color-white); font-weight: 700;
+    }
+    .lien-evitement:focus { top: 0; }
+
+    .bandeau-demo { background: var(--color-soleil); color: var(--color-encre); font-size: 0.8125rem; font-weight: 700; text-align: center; padding: 0.375rem 1rem; }
+
+    /* Surtitre en petites capitales espacées */
+    .surtitre { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-lac); }
+    .surtitre::before { content: ''; width: 1.5rem; height: 3px; border-radius: 2px; background: var(--color-terre); }
+    .sur-sombre .surtitre { color: var(--color-soleil); }
+    .sur-sombre .surtitre::before { background: var(--color-soleil); }
+
+    .titre-section { font-size: clamp(1.75rem, 1.2rem + 1.8vw, 2.5rem); }
+
+    /* Boutons */
+    .bouton {
+        display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 3rem; padding: 0.75rem 1.375rem;
+        border-radius: 999px; font-weight: 700; line-height: 1.2; text-decoration: none; cursor: pointer;
+        transition: background-color 0.15s, color 0.15s, transform 0.15s, box-shadow 0.15s;
+    }
+    .bouton:hover { transform: translateY(-1px); }
+    .bouton-principal { background: var(--color-terre); color: var(--color-white); box-shadow: 0 8px 20px -10px rgb(188 26 42 / 0.55); }
+    .bouton-principal:hover { background: var(--color-terre-fonce); }
+    .bouton-secondaire { background: var(--color-white); color: var(--color-lac); box-shadow: inset 0 0 0 2px var(--color-lac); }
+    .bouton-secondaire:hover { background: var(--color-lac); color: var(--color-white); }
+    .bouton-clair { background: var(--color-white); color: var(--color-nuit); }
+    .bouton-clair:hover { background: var(--color-sable); }
+
+    /* Boutons d'actions éditoriales du back-office */
+    .bouton-succes, .bouton-publier {
+        background-color: #15803d !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 14px -3px rgba(21, 128, 61, 0.5);
+    }
+    .bouton-succes:hover, .bouton-publier:hover {
+        background-color: #166534 !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px -3px rgba(21, 128, 61, 0.6);
+    }
+    .bouton-soumettre {
+        background-color: #0369a1 !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 14px -3px rgba(3, 105, 161, 0.4);
+    }
+    .bouton-soumettre:hover {
+        background-color: #075985 !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+    }
+    .bouton-alerte, .bouton-depublier {
+        background-color: #d97706 !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 14px -3px rgba(217, 119, 6, 0.45);
+    }
+    .bouton-alerte:hover, .bouton-depublier:hover {
+        background-color: #b45309 !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+    }
+    .bouton-danger {
+        background-color: #dc2626 !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 14px -3px rgba(220, 38, 38, 0.45);
+    }
+    .bouton-danger:hover {
+        background-color: #b91c1c !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+    }
+
+    /* Utilitaires de couleur indispensables pour le back-office */
+    .bg-emerald-600 { background-color: #059669 !important; }
+    .hover\:bg-emerald-700:hover { background-color: #047857 !important; }
+    .bg-emerald-500 { background-color: #10b981 !important; }
+    .bg-emerald-400 { background-color: #34d399 !important; }
+    .bg-emerald-100 { background-color: #d1fae5 !important; }
+    .bg-emerald-50 { background-color: #ecfdf5 !important; }
+    .bg-emerald-50\/70 { background-color: rgba(236, 253, 245, 0.7) !important; }
+    .bg-emerald-50\/60 { background-color: rgba(236, 253, 245, 0.6) !important; }
+    .bg-emerald-50\/90 { background-color: rgba(236, 253, 245, 0.9) !important; }
+    .bg-emerald-50\/50 { background-color: rgba(236, 253, 245, 0.5) !important; }
+    .text-emerald-700 { color: #047857 !important; }
+    .text-emerald-800 { color: #065f46 !important; }
+    .text-emerald-900 { color: #064e3b !important; }
+    .border-emerald-200 { border-color: #a7f3d0 !important; }
+
+    .bg-amber-500 { background-color: #f59e0b !important; }
+    .hover\:bg-amber-600:hover { background-color: #d97706 !important; }
+    .hover\:bg-amber-100:hover { background-color: #fef3c7 !important; }
+    .bg-amber-100 { background-color: #fef3c7 !important; }
+    .bg-amber-50 { background-color: #fffbeb !important; }
+    .bg-amber-50\/70 { background-color: rgba(255, 251, 235, 0.7) !important; }
+    .bg-amber-50\/20 { background-color: rgba(255, 251, 235, 0.2) !important; }
+    .text-amber-700 { color: #b45309 !important; }
+    .text-amber-800 { color: #92400e !important; }
+    .text-amber-900 { color: #78350f !important; }
+    .text-amber-950 { color: #451a03 !important; }
+    .border-amber-200 { border-color: #fde68a !important; }
+    .border-amber-300 { border-color: #fcd34d !important; }
+
+    .bg-sky-700 { background-color: #0369a1 !important; }
+    .hover\:bg-sky-800:hover { background-color: #075985 !important; }
+    .bg-sky-100 { background-color: #e0f2fe !important; }
+    .bg-sky-50 { background-color: #f0f9ff !important; }
+    .bg-sky-50\/60 { background-color: rgba(240, 249, 255, 0.6) !important; }
+    .bg-sky-50\/70 { background-color: rgba(240, 249, 255, 0.7) !important; }
+    .text-sky-700 { color: #0369a1 !important; }
+    .text-sky-800 { color: #075985 !important; }
+    .border-sky-200 { border-color: #bae6fd !important; }
+
+    .bg-rose-600 { background-color: #e11d48 !important; }
+    .hover\:bg-rose-700:hover { background-color: #be123c !important; }
+    .bg-rose-50 { background-color: #fff1f2 !important; }
+    .bg-rose-50\/50 { background-color: rgba(255, 241, 242, 0.5) !important; }
+    .bg-rose-50\/70 { background-color: rgba(255, 241, 242, 0.7) !important; }
+    .text-rose-600 { color: #e11d48 !important; }
+    .text-rose-800 { color: #9f1239 !important; }
+    .text-rose-950 { color: #4c0519 !important; }
+    .border-rose-200 { border-color: #fecdd3 !important; }
+
+    .lien-fleche { display: inline-flex; align-items: center; gap: 0.375rem; font-weight: 700; text-decoration: none; }
+    .lien-fleche svg { transition: transform 0.15s; }
+    .lien-fleche:hover { text-decoration: underline; }
+    .lien-fleche:hover svg, .carte:hover .lien-fleche svg { transform: translateX(3px); }
+
+    /* Cartes : toute la carte est cliquable par un lien étendu, sans imbriquer de liens */
+    .carte { position: relative; display: flex; flex-direction: column; overflow: hidden; border-radius: var(--radius-carte); background: var(--color-white); box-shadow: var(--shadow-carte); transition: transform 0.18s, box-shadow 0.18s; }
+    .carte:hover { transform: translateY(-3px); box-shadow: var(--shadow-survol); }
+    .carte:focus-within { box-shadow: var(--shadow-survol), 0 0 0 3px var(--color-lac); }
+    .lien-etendu { text-decoration: none; color: inherit; }
+    .lien-etendu::after { content: ''; position: absolute; inset: 0; z-index: 1; }
+    .lien-etendu:focus-visible { outline: none; }
+
+    /* Badges de statut, écrits en toutes lettres (charte P1) */
+    .badge { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.8125rem; font-weight: 700; line-height: 1.4; background: var(--color-argile); color: var(--color-encre); }
+    .badge::before { content: ''; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: currentColor; opacity: 0.85; }
+    .badge[data-statut='pret_a_etre_soumis'], .badge[data-statut='financement_recherche'] { background: var(--color-soleil); }
+    .badge[data-statut='finance'] { background: var(--color-lac); color: var(--color-white); }
+    .badge[data-statut='en_execution'] { background: var(--color-lagune); color: var(--color-white); }
+    .badge[data-statut='acheve'] { background: var(--color-palmeraie); color: var(--color-white); }
+    .badge[data-statut='suspendu'] { background: var(--color-ardoise); color: var(--color-white); }
+
+    /* Frise géométrique (triangles et losanges) : proposition, à valider par la Commune */
+    .frise { height: 14px; background-repeat: repeat-x; background-size: 42px 14px; background-image: var(--image-frise); }
+    .frise-claire { background-size: 28px 14px; }
+    .frise-claire { background-image: var(--image-frise-claire); }
+    .fond-motif { background-color: var(--color-sable); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 56'%3E%3Cpath d='m28 6 6 6-6 6-6-6zM0 50l6-12 6 12zM44 50l6-12 6 12z' fill='%23EBE4C2' fill-opacity='.7'/%3E%3C/svg%3E"); background-size: 56px 56px; }
+
+    /* Vignette d'un projet sans photo validée : illustration du secteur, sans image à télécharger */
+    .vignette { position: relative; aspect-ratio: 3 / 2; display: grid; place-items: center; color: var(--color-white); background: linear-gradient(135deg, var(--color-lagune), var(--color-lac) 60%, var(--color-nuit)); overflow: hidden; }
+    .vignette::after { content: ''; position: absolute; inset: auto 0 0; z-index: 1; height: 14px; background: var(--image-frise) repeat-x; background-size: 42px 14px; }
+    .vignette img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+    /* Barre de progression du financement acquis (élément natif, sans style en ligne) */
+    progress.financement { appearance: none; width: 100%; height: 0.625rem; border: 0; border-radius: 999px; overflow: hidden; background: var(--color-argile); }
+    progress.financement::-webkit-progress-bar { background: var(--color-argile); border-radius: 999px; }
+    progress.financement::-webkit-progress-value { background: var(--color-palmeraie); border-radius: 999px; }
+    progress.financement::-moz-progress-bar { background: var(--color-palmeraie); border-radius: 999px; }
+
+    /* Pavé de date de l'agenda */
+    .pave-date { display: grid; place-items: center; flex: none; width: 4rem; height: 4.25rem; border-radius: 0.75rem; background: var(--color-lac); color: var(--color-white); line-height: 1; }
+    .pave-date strong { font-size: 1.625rem; font-weight: 800; }
+    .pave-date span { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+
+    /* Formulaires */
+    .etiquette { display: block; font-weight: 700; margin-bottom: 0.375rem; }
+    .aide { display: block; font-size: 0.875rem; color: var(--color-ardoise); margin-top: -0.125rem; margin-bottom: 0.5rem; }
+    .champ { display: block; width: 100%; min-height: 3rem; padding: 0.75rem 1rem; border: 2px solid color-mix(in srgb, var(--color-ardoise) 75%, white); border-radius: 0.625rem; background: var(--color-white); color: var(--color-encre); font: inherit; }
+    .champ:hover { border-color: var(--color-ardoise); }
+    .champ:focus { outline: 3px solid color-mix(in srgb, var(--color-lac) 35%, white); outline-offset: 0; border-color: var(--color-lac); }
+    .champ[aria-invalid='true'] { border-color: var(--color-terre); }
+    textarea.champ { min-height: 9rem; resize: vertical; }
+    .erreur { display: flex; gap: 0.375rem; margin-top: 0.375rem; color: var(--color-terre-fonce); font-weight: 700; font-size: 0.9375rem; }
+    .champ-piege { position: absolute !important; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+    .case { width: 1.375rem; height: 1.375rem; flex: none; margin-top: 0.125rem; accent-color: var(--color-lac); }
+
+    /* Texte éditorial (Markdown publié, assaini) */
+    .prose-makary { max-width: 46rem; font-size: 1.0625rem; }
+    .prose-makary > * + * { margin-top: 1.1em; }
+    .prose-makary h2 { font-size: 1.625rem; margin-top: 1.8em; }
+    .prose-makary h3 { font-size: 1.25rem; margin-top: 1.5em; }
+    .prose-makary ul { list-style: disc; padding-left: 1.4em; }
+    .prose-makary ol { list-style: decimal; padding-left: 1.4em; }
+    .prose-makary li + li { margin-top: 0.35em; }
+    .prose-makary blockquote { border-left: 4px solid var(--color-soleil); padding-left: 1.25rem; font-size: 1.15em; color: var(--color-ardoise); }
+
+    /* Emplacement sans contenu validé : jamais de faux texte (direction artistique §5) */
+    .a-fournir { border: 2px dashed color-mix(in srgb, var(--color-terre) 55%, white); border-radius: var(--radius-carte); background: var(--color-sable); }
+
+    /* Puces de filtre et de sous-navigation */
+    .puce { display: inline-flex; align-items: center; gap: 0.375rem; min-height: 2.5rem; padding: 0.375rem 1rem; border-radius: 999px; background: var(--color-white); color: var(--color-lac); font-weight: 700; font-size: 0.9375rem; text-decoration: none; box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--color-lac) 40%, white); }
+    .puce:hover { box-shadow: inset 0 0 0 2px var(--color-lac); }
+    .puce[aria-current='page'], .puce[aria-current='true'] { background: var(--color-lac); color: var(--color-white); box-shadow: none; }
+
+    /* Navigation principale : soulignement de la rubrique active */
+    .nav-lien { position: relative; display: block; padding: 0.5rem 0.25rem; color: var(--color-encre); font-weight: 700; text-decoration: none; }
+    .nav-lien::after { content: ''; position: absolute; left: 0.25rem; right: 0.25rem; bottom: -0.125rem; height: 3px; border-radius: 3px; background: var(--color-terre); transform: scaleX(0); transform-origin: left; transition: transform 0.18s; }
+    .nav-lien:hover::after, .nav-lien[aria-current='page']::after { transform: scaleX(1); }
+    .nav-lien[aria-current='page'] { color: var(--color-lac); }
+
+    details.menu-mobile > summary { list-style: none; }
+    details.menu-mobile > summary::-webkit-details-marker { display: none; }
+    details.menu-mobile[open] .icone-menu { display: none; }
+    details.menu-mobile:not([open]) .icone-fermer { display: none; }
+
+    .chiffre { font-size: clamp(2.5rem, 2rem + 2vw, 3.5rem); font-weight: 800; line-height: 1; letter-spacing: -0.03em; color: var(--color-soleil); }
+
+    .tableau { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+    .tableau th { text-align: left; font-weight: 700; color: var(--color-ardoise); border-bottom: 2px solid var(--color-argile); padding: 0.5rem 0.75rem 0.5rem 0; }
+    .tableau td { border-bottom: 1px solid var(--color-argile); padding: 0.625rem 0.75rem 0.625rem 0; vertical-align: top; }
+
+    .icone { width: 1.5rem; height: 1.5rem; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+}
+
+/* Back-office : composants UI/UX modernes et direction artistique raffinée */
+@layer components {
+    .badge[data-etat='en_revue'] { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+    .badge[data-etat='approuve'] { background: #ede9fe; color: #5b21b6; border: 1px solid #c4b5fd; }
+    .badge[data-etat='publie'] { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+    .badge[data-etat='brouillon'] { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+    .badge[data-etat='retire'] { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+    .panneau {
+        border-radius: 1rem;
+        background: var(--color-white);
+        padding: 1.5rem;
+        border: 1px solid rgba(26, 20, 57, 0.08);
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 10px 15px -3px rgb(0 0 0 / 0.02);
+        transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .panneau-hover:hover {
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 20px 25px -5px rgb(0 0 0 / 0.05);
+        transform: translateY(-2px);
+    }
+
+    /* Avatar circulaire avec dégradé */
+    .avatar-admin {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 9999px;
+        font-weight: 800;
+        font-size: 0.875rem;
+        color: #ffffff;
+        background: linear-gradient(135deg, var(--color-lac), var(--color-lagune));
+        box-shadow: 0 2px 4px rgba(26, 20, 57, 0.15);
+        flex-shrink: 0;
+    }
+
+    /* Cartes de statistiques du tableau de bord (KPI) */
+    .kpi-stat {
+        position: relative;
+        overflow: hidden;
+        border-radius: 1rem;
+        padding: 1.25rem 1.5rem;
+        background: #ffffff;
+        border: 1px solid rgba(26, 20, 57, 0.08);
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.04), 0 6px 12px -2px rgb(0 0 0 / 0.02);
+        transition: all 0.2s ease;
+    }
+    .kpi-stat:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px -2px rgb(26 20 57 / 0.1), 0 12px 24px -4px rgb(26 20 57 / 0.06);
+    }
+
+    /* Tableaux modernes du back-office */
+    .admin-tableau {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 0.875rem;
+    }
+    .admin-tableau th {
+        text-align: left;
+        font-weight: 700;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--color-ardoise);
+        background: #f8fafc;
+        padding: 0.875rem 1rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .admin-tableau th:first-child { border-top-left-radius: 0.5rem; }
+    .admin-tableau th:last-child { border-top-right-radius: 0.5rem; }
+    .admin-tableau td {
+        padding: 1rem;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+        background: #ffffff;
+        transition: background-color 0.15s ease;
+    }
+    .admin-tableau tbody tr:hover td {
+        background-color: #f8fafc;
+    }
+    .admin-tableau tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Liens de navigation du menu latéral */
+    .nav-item-admin {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.625rem 0.875rem;
+        border-radius: 0.625rem;
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-decoration: none;
+        transition: all 0.15s ease;
+        position: relative;
+    }
+    .nav-item-admin.actif {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.08));
+        color: #ffffff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+    }
+    .nav-item-admin.actif::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 25%;
+        bottom: 25%;
+        width: 3px;
+        border-radius: 9999px;
+        background: var(--color-soleil);
+    }
+    .nav-item-admin:not(.actif) {
+        color: #cbd5e1;
+    }
+    .nav-item-admin:not(.actif):hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff;
+        transform: translateX(2px);
+    }
+}

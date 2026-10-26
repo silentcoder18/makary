@@ -1,0 +1,1 @@
+@include('errors.erreur', ['code' => 500, 'titre' => 'Une erreur est survenue', 'message' => 'Le site a rencontré un problème. L’équipe technique en est informée ; merci de réessayer dans quelques instants.'])

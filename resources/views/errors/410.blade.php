@@ -1,0 +1,1 @@
+@include('errors.erreur', ['code' => 410, 'titre' => 'Cette page n’existe plus', 'message' => 'Ce contenu de l’ancien site n’a pas été repris : il était incomplet, non vérifié ou sans rapport avec la commune.'])

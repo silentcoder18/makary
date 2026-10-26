@@ -1,0 +1,17 @@
+{
+  "resources/css/portail.css": {
+    "file": "assets/portail-BzK3pMfe.css",
+    "name": "portail",
+    "names": [
+      "portail.css"
+    ],
+    "src": "resources/css/portail.css",
+    "isEntry": true
+  },
+  "resources/js/portail.js": {
+    "file": "assets/portail-DeTKpBDo.js",
+    "name": "portail",
+    "src": "resources/js/portail.js",
+    "isEntry": true
+  }
+}

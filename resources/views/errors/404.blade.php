@@ -1,0 +1,1 @@
+@include('errors.erreur', ['code' => 404, 'titre' => 'Page introuvable', 'message' => 'Cette adresse ne correspond à aucune page du site. Elle a peut-être changé : utilisez la recherche ou le plan du site.'])
